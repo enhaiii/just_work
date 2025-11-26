@@ -1,19 +1,27 @@
-from django.shortcuts import HttpResponse, get_object_or_404
+from django.shortcuts import HttpResponse, render, get_object_or_404
 from .models import Item, Manufacturer
 from django.db.models import F, Sum
 
 def add_item(request):
 
-    manufacturer =  get_object_or_404(
+    manufacturer = get_object_or_404(
         Manufacturer,
-        name='Бездельники'
+        name = 'Рога и копыта'
     )
-    item = Item(
-        name = request.GET.get('name', ''),
-        price = request.GET.get('price', ''),
-        quantity = request.GET.get('quantity', ''),
-        manufacturer=manufacturer
-    )
-    item.save()
+    name = request.POST.get('item_name', '')
+    price = request.POST.get('price', '')
+    quantity = request.POST.get('quantity', '')
+    
+    if name and price and quantity:
+        item = Item(
+            name = name,
+            price = price,
+            quantity = quantity,
+            manufacturer=manufacturer,
+        )
+        item.save()
 
-    return HttpResponse(status=201)
+    context = {
+    }
+
+    return render(request, 'index.html', context)
