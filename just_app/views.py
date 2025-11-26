@@ -1,15 +1,19 @@
-from django.shortcuts import render
-from .models import Book, Author, Publisher
-from django.db.models import Count, F
+from django.shortcuts import HttpResponse, get_object_or_404
+from .models import Item, Manufacturer
+from django.db.models import F, Sum
 
-def hello(request):
-    result = (
-        Book
-        .objects
-        .values('publisher')
-        .annotate(books_count=Count(F('title')), name = F('publisher__name'))
+def add_item(request):
+
+    manufacturer =  get_object_or_404(
+        Manufacturer,
+        name='Бездельники'
     )
+    item = Item(
+        name = request.GET.get('name', ''),
+        price = request.GET.get('price', ''),
+        quantity = request.GET.get('quantity', ''),
+        manufacturer=manufacturer
+    )
+    item.save()
 
-    return render(request, 
-              'index.html', 
-              { 'results': result})
+    return HttpResponse(status=201)
