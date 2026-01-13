@@ -1,10 +1,30 @@
 from django.db import models
 
-class Manufacturer(models.Model):
-    name = models.CharField()
-
-class Item(models.Model):
+class Product(models.Model):
     name = models.CharField()
     price = models.DecimalField( max_digits=10, decimal_places=2)
-    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    article = models.IntegerField("Article", primary_key=True)
+    description = models.TextField()
+
+    class Meta:
+        verbose_name = "Product"
+        verbose_name_plural = "Products"
+
+    def __str__(self):
+        return f"{self.name}"
+
+class Size(models.Model):
+    ST = [
+        ("S" , "S"),
+        ("M", "M"),
+        ("L", "L")
+    ]
+    art_product = models.ManyToManyField(Product, verbose_name='Product')
+    size = models.CharField('Size', max_length=2, choices=ST)
+    
+    class Meta:
+        verbose_name = "Size"
+        verbose_name_plural = "Sizes"
+
+    def __str__(self):
+        return f"{self.art_product}"
